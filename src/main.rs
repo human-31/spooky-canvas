@@ -3,5 +3,5 @@ mod scratchpaper;
 fn main() {
     println!("Hello, world!");
 
-    scratchpaper::test_run::run();
+    scratchpaper::image_test::run();
 }
