@@ -1,7 +1,6 @@
 mod scratchpaper;
+mod spooky_canvas;
 
 fn main() {
-    println!("Hello, world!");
-
-    scratchpaper::image_test::run();
+    spooky_canvas::run_canvas();
 }
