@@ -18,7 +18,10 @@ impl Canvas {
         }
     }
 
-    pub fn with_rgba(width: u32, height: u32, r: u8, g: u8, b: u8, a: u8) -> Self {
+    pub fn with_rgba(
+        width: u32, height: u32,
+        r: u8, g: u8, b: u8, a: u8,
+    ) -> Self {
         let mut pixels = Vec::with_capacity((width * height * 4) as usize);
 
         for _ in 0..(width * height) {
@@ -63,10 +66,16 @@ impl Canvas {
 
 // setters
 impl Canvas {
-    pub fn set_pixel_unchecked(&mut self, x: u32, y: u32) {
+    pub fn set_pixel_unchecked(
+        &mut self, x: u32, y: u32,
+        r: u8, g: u8, b: u8, a: u8,
+    ) {
         let i = self.xy_to_index_unchecked(x, y);
 
-        self.pixels[i] = 1;
+        self.pixels[i] = r;
+        self.pixels[i + 1] = g;
+        self.pixels[i + 2] = b;
+        self.pixels[i + 3] = a;
     }
 }
 
