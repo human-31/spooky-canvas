@@ -157,7 +157,7 @@ impl Canvas {
 }
 
 #[allow(dead_code)]
-pub fn test() {
+pub fn main_test() {
     println!("Running basic_canvas/canvas.rs\n");
 
     let canvas = Canvas::new(256, 256);
