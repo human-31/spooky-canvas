@@ -100,6 +100,5 @@ impl SimpleCanvas {
     }
 }
 
-#[allow(dead_code)]
 pub fn run() {
 }

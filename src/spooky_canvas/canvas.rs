@@ -18,17 +18,20 @@ impl Canvas {
         }
     }
 
-    pub fn with_color(width: u32, height: u32, rgba: [u8; 4]) -> Self {
+    pub fn with_rgba(width: u32, height: u32, r: u8, g: u8, b: u8, a: u8) -> Self {
         let mut pixels = Vec::with_capacity((width * height * 4) as usize);
 
         for _ in 0..(width * height) {
-            pixels.extend_from_slice(&rgba);
+            pixels.push(r);
+            pixels.push(g);
+            pixels.push(b);
+            pixels.push(a);
         }
 
         Self {
             width,
             height,
-            pixels,
+            pixels
         }
     }
 }
@@ -60,7 +63,11 @@ impl Canvas {
 
 // setters
 impl Canvas {
+    pub fn set_pixel_unchecked(&mut self, x: u32, y: u32) {
+        let i = self.xy_to_index_unchecked(x, y);
 
+        self.pixels[i] = 1;
+    }
 }
 
 // checkers
@@ -140,7 +147,8 @@ impl Canvas {
 
 }
 
-pub fn run() {
+#[allow(dead_code)]
+pub fn test() {
     println!("Running basic_canvas/canvas.rs\n");
 
     let canvas = Canvas::new(256, 256);
@@ -177,7 +185,7 @@ pub fn run() {
 
     canvas.save_as_png("output/canvas-test-0.png");
 
-    let canvas = Canvas::with_color(256, 256, [255, 0, 255, 255]);
+    let canvas = Canvas::with_rgba(256, 256, 255, 0, 255, 255);
 
     let width = canvas.width();
     let height = canvas.height();

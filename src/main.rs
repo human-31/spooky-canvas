@@ -2,5 +2,5 @@ mod scratchpaper;
 mod spooky_canvas;
 
 fn main() {
-    spooky_canvas::run_canvas();
+    spooky_canvas::test_canvas();
 }
