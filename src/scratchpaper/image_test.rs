@@ -1,3 +1,17 @@
+//! # test docs in scratchpaper/image_tests.rs
+//! 
+//! ## scratchpaper/image_tests.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### scratchpaper/image_tests.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
+
 #![allow(unused)]
 
 use image::{ImageBuffer, Rgba};

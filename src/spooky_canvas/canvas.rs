@@ -1,13 +1,35 @@
+//! # test docs in spooky_canvas/canvas.rs
+//! 
+//! ## spooky_canvas/canvas.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### spooky_canvas/canvas.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
+
 use image::{ImageBuffer, Rgba};
 
+/// Simple RGBA canvas.
 pub struct Canvas {
+    /// Width of the canvas in pixels.
     width: u32,
+
+    /// Height of the canvas in pixels.
     height: u32,
-    pub pixels: Vec<u8>, // RGBA row-major
+
+    /// Pixel data stored as a flat vector of bytes (RGBA) in row-major order.
+    pub pixels: Vec<u8>,
 }
 
-// constructors
+/// Constructors
 impl Canvas {
+    /// Creates a new canvas with the specified width and height,
+    /// initialized to transparent black.
     pub fn new(width: u32, height: u32) -> Self {
         let pixels = vec![0; (width * height * 4) as usize];
 
@@ -18,6 +40,7 @@ impl Canvas {
         }
     }
 
+    /// Creates a new canvas with the specified width, height, and RGBA color.
     pub fn with_rgba(
         width: u32, height: u32,
         r: u8, g: u8, b: u8, a: u8,
@@ -39,24 +62,29 @@ impl Canvas {
     }
 }
 
-// getters
+/// Getters
 impl Canvas {
+    /// Returns the width of the canvas in pixels.
     pub fn width(&self) -> u32 {
         self.width
     }
 
+    /// Returns the height of the canvas in pixels.
     pub fn height(&self) -> u32 {
         self.height
     }
 
+    /// Returns the size of the canvas as (width, height) in pixels.
     pub fn size(&self) -> (u32, u32) {
         (self.width, self.height)
     }
 
+    /// Returns the total number of pixels in the canvas.
     pub fn pixel_count(&self) -> u32 {
         self.width * self.height
     }
 
+    /// Returns the RGBA value of the pixel at (x, y) without bounds checking.
     pub fn pixel_unchecked(&self, x: u32, y: u32) -> (u8, u8, u8, u8) {
         let i = self.xy_to_index_unchecked(x, y);
 
@@ -64,8 +92,9 @@ impl Canvas {
     }
 }
 
-// setters
+/// Setters
 impl Canvas {
+    /// Sets the RGBA value of the pixel at (x, y) without bounds checking.
     pub fn set_pixel_unchecked(
         &mut self, x: u32, y: u32,
         r: u8, g: u8, b: u8, a: u8,
@@ -79,19 +108,24 @@ impl Canvas {
     }
 }
 
-// checkers
+/// Checkers
 impl Canvas {
+    /// Returns true if the given index is within the bounds of the pixel data.
     pub fn index_in_bounds(&self, index: usize) -> bool {
         index < self.pixels.len()
     }
 
+    /// Returns true if the given (x, y) coordinates are within
+    /// the canvas bounds.
     pub fn xy_in_bounds(&self, x: u32, y: u32) -> bool {
         x < self.width && y < self.height
     }
 }
 
-// conversions
+/// Conversions
 impl Canvas {
+    /// Returns the (x, y) coordinates corresponding to the given index,
+    /// or None if the index is out of bounds.
     pub fn index_to_xy(&self, index: usize) -> Option<(u32, u32)>{
         if !self.index_in_bounds(index) {
             return None;
@@ -100,12 +134,16 @@ impl Canvas {
         Some(self.index_to_xy_unchecked(index))
     }
     
+    /// Returns the (x, y) coordinates corresponding to the given index,
+    /// or panics if the index is out of bounds.
     pub fn index_to_xy_expect(&self, index: usize) -> (u32, u32) {
         assert!(self.index_in_bounds(index), "index {index} out of bounds");
 
         self.index_to_xy_unchecked(index)
     }
 
+    /// Returns the (x, y) coordinates corresponding to the given index
+    /// without bounds checking.
     pub fn index_to_xy_unchecked(&self, index: usize) -> (u32, u32) {
         let pixel_index = (index as u32) / 4;
 
@@ -115,6 +153,8 @@ impl Canvas {
         (x, y)
     }
 
+    /// Returns the index corresponding to the given (x, y) coordinates,
+    /// or None if the coordinates are out of bounds.
     pub fn xy_to_index(&self, x: u32, y: u32) -> Option<usize> {
         if !self.xy_in_bounds(x, y) {
             return None;
@@ -123,6 +163,8 @@ impl Canvas {
         Some(self.xy_to_index_unchecked(x, y))
     }
 
+    /// Returns the index corresponding to the given (x, y) coordinates,
+    /// or panics if the coordinates are out of bounds.
     pub fn xy_to_index_expect(&self, x: u32, y: u32) -> usize {
         assert!(
             self.xy_in_bounds(x, y),
@@ -133,13 +175,16 @@ impl Canvas {
         self.xy_to_index_unchecked(x, y)
     }
 
+    /// Returns the index corresponding to the given (x, y) coordinates
+    /// without bounds checking.
     pub fn xy_to_index_unchecked(&self, x: u32, y: u32) -> usize {
         4 * (self.width * y + x) as usize
     }
 }
 
-// misc
+/// Misc
 impl Canvas {
+    /// Saves the canvas as a PNG file at the specified path.
     pub fn save_as_png(&self, path: &str) {
         let buffer = ImageBuffer::<Rgba<u8>, _>::from_raw(
             self.width,
@@ -151,7 +196,7 @@ impl Canvas {
     }
 }
 
-// private helpers
+/// Private Helpers
 impl Canvas {
 
 }

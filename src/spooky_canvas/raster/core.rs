@@ -1,8 +1,25 @@
-use rayon::iter;
+//! # test docs in spooky_canvas/raster/core.rs
+//! 
+//! ## spooky_canvas/raster/core.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### spooky_canvas/raster/core.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
 
 use super::super::canvas::Canvas;
 use super::tests;
 
+/// Draws a circle on the given canvas with the specified center coordinates,
+/// radius, and RGBA color.
+/// 
+/// The circle replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn circle(
     canvas: &mut Canvas,
     x: u32, y: u32, radius: u32,
@@ -11,6 +28,11 @@ pub fn circle(
 
 }
 
+/// Draws an ellipse on the given canvas with the specified center coordinates,
+/// radii along the x and y axes, and RGBA color.
+/// 
+/// The ellipse replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn ellipse(
     canvas: &mut Canvas,
     x: u32, y: u32, x_radius: u32, y_radius: u32,
@@ -20,6 +42,7 @@ pub fn ellipse(
 }
 
 
+/// Fills the entire canvas with the specified RGBA color.
 pub fn fill_all(
     canvas: &mut Canvas,
     r: u8, g: u8, b: u8, a: u8,
@@ -27,6 +50,11 @@ pub fn fill_all(
 
 }
 
+/// Draws a polygon on the given canvas defined by the list of (x, y) points,
+/// using the specified RGBA color.
+/// 
+/// The polygon replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn polygon(
     canvas: &mut Canvas,
     points: &[(u32, u32)],
@@ -35,6 +63,11 @@ pub fn polygon(
 
 }
 
+/// Draws a rectangle on the given canvas with the specified top-left corner
+/// coordinates, width, height, and RGBA color.
+/// 
+/// The rectangle replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn rect(
     canvas: &mut Canvas,
     x: u32, y: u32, width: u32, height: u32,
@@ -43,6 +76,12 @@ pub fn rect(
 
 }
 
+
+/// Draws a square on the given canvas with the specified top-left corner
+/// coordinates, size, and RGBA color.
+/// 
+/// The square replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn square(
     canvas: &mut Canvas,
     x: u32, y: u32, size: u32,
@@ -51,6 +90,11 @@ pub fn square(
 
 }
 
+/// Draws a triangle on the given canvas defined by the three vertex
+/// coordinates, using the specified RGBA color.
+/// 
+/// The triangle replaces any existing pixels within its area.
+/// No anti-aliasing is applied.
 pub fn triangle(
     canvas: &mut Canvas,
     x1: u32, y1: u32,

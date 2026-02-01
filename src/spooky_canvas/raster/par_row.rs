@@ -1,6 +1,22 @@
+//! # test docs in spooky_canvas/raster/par_row.rs
+//! 
+//! ## spooky_canvas/raster/par_row.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### spooky_canvas/raster/par_row.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
+
 use super::super::canvas::Canvas;
 use rayon::prelude::*;
 
+/// Fills the entire canvas with the specified RGBA color
+/// using parallel row processing.
 pub fn fill_all(
     canvas: &mut Canvas,
     r: u8, g: u8, b: u8, a: u8,

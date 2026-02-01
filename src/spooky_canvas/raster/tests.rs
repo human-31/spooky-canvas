@@ -1,4 +1,16 @@
-use rayon::result;
+//! # test docs in spooky_canvas/raster/tests.rs
+//! 
+//! ## spooky_canvas/raster/tests.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### spooky_canvas/raster/tests.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
 
 use super::super::canvas::Canvas;
 use super::par_pixel;
@@ -7,6 +19,7 @@ use super::single_thread;
 
 use std::collections::HashMap;
 
+/// Uses each fill_all() variant multiple times, measuring duration.
 pub fn fill_all_table(
     width: u32, height: u32,
     sets: u32, iterations: u32,

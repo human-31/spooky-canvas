@@ -1,5 +1,21 @@
+//! # test docs in spooky_canvas/raster/single_thread.rs
+//! 
+//! ## spooky_canvas/raster/single_thread.rs h2
+//! 
+//! qwertyuiop
+//! asdfghjkl
+//! zxcvbnm
+//! 
+//! ### spooky_canvas/raster/single_thread.rs h3
+//! 
+//! - 10
+//! - 31
+//! - 06
+
 use super::super::canvas::Canvas;
 
+/// Fills the entire canvas with the specified RGBA color
+/// using a single-thread.
 pub fn fill_all(
     canvas: &mut Canvas,
     r: u8, g: u8, b: u8, a: u8,
