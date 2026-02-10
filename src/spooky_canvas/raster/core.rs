@@ -24,7 +24,7 @@ use super::tests;
 pub fn circle(
     canvas: &mut Canvas,
     x: u32, y: u32, radius: u32,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4],
 ) {
 
 }
@@ -37,7 +37,7 @@ pub fn circle(
 pub fn ellipse(
     canvas: &mut Canvas,
     x: u32, y: u32, x_radius: u32, y_radius: u32,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4]
 ) {
 
 }
@@ -46,7 +46,7 @@ pub fn ellipse(
 /// Fills the entire canvas with the specified RGBA color.
 pub fn fill_all(
     canvas: &mut Canvas,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4]
 ) {
 
 }
@@ -59,7 +59,7 @@ pub fn fill_all(
 pub fn polygon(
     canvas: &mut Canvas,
     points: &[(u32, u32)],
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4]
 ) {
 
 }
@@ -72,7 +72,7 @@ pub fn polygon(
 pub fn rect(
     canvas: &mut Canvas,
     x: u32, y: u32, width: u32, height: u32,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4],
 ) {
 
 }
@@ -86,7 +86,7 @@ pub fn rect(
 pub fn square(
     canvas: &mut Canvas,
     x: u32, y: u32, size: u32,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4],
 ) {
 
 }
@@ -101,7 +101,7 @@ pub fn triangle(
     x1: u32, y1: u32,
     x2: u32, y2: u32,
     x3: u32, y3: u32,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4],
 ) {
 
 }
