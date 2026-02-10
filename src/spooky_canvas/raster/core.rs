@@ -12,6 +12,7 @@
 //! - 31
 //! - 06
 
+use super::single_thread;
 use super::super::canvas::Canvas;
 use super::tests;
 
@@ -110,88 +111,185 @@ pub fn main_test() {
     println!("===============================================================");
     println!();
 
-    if false {
-        let sets = 5;
-        let small_iter = 5;
-        let medium_iter = 50;
-        let large_iter = 500;
-        let xlarge_iter = 5000;
+    let test_id = 4;
 
-        tests::fill_all_table(1, 1, sets, small_iter, true);
-        tests::fill_all_table(1, 1, sets, medium_iter, true);
-        tests::fill_all_table(1, 1, sets, large_iter, true);
-        tests::fill_all_table(1, 1, sets, xlarge_iter, true);
+    match test_id {
+        0 => {
+            let sets = 5;
+            let small_iter = 5;
+            let medium_iter = 50;
+            let large_iter = 500;
+            let xlarge_iter = 5000;
+        
+            tests::fill_all_table(1, 1, sets, small_iter, true);
+            tests::fill_all_table(1, 1, sets, medium_iter, true);
+            tests::fill_all_table(1, 1, sets, large_iter, true);
+            tests::fill_all_table(1, 1, sets, xlarge_iter, true);
+        
+            println!("=============================================================");
+            println!();
+            
+            tests::fill_all_table(10, 10, sets, small_iter, true);
+            tests::fill_all_table(10, 10, sets, medium_iter, true);
+            tests::fill_all_table(10, 10, sets, large_iter, true);
+            tests::fill_all_table(10, 10, sets, xlarge_iter, true);
+            
+            println!("=============================================================");
+            println!();
+            
+            tests::fill_all_table(100, 100, sets, small_iter, true);
+            tests::fill_all_table(100, 100, sets, medium_iter, true);
+            tests::fill_all_table(100, 100, sets, large_iter, true);
+            tests::fill_all_table(100, 100, sets, xlarge_iter, true);
+        }
 
-        println!("=============================================================");
-        println!();
+        1 => {
+            /*
+            kinds of tests to run for tests::fill_all_table():
+              - small square
+              - large square
+              - small wide rectangle
+              - large wide rectangle
+              - small tall rectangle
+              - large tall rectangle
+            */
         
-        tests::fill_all_table(10, 10, sets, small_iter, true);
-        tests::fill_all_table(10, 10, sets, medium_iter, true);
-        tests::fill_all_table(10, 10, sets, large_iter, true);
-        tests::fill_all_table(10, 10, sets, xlarge_iter, true);
+            let sets = 10;
+            let small_iter = 10;
+            let large_iter = 100;
         
-        println!("=============================================================");
-        println!();
+            // 1:1 small
+            tests::fill_all_table(144, 144, sets, small_iter, true);
+            tests::fill_all_table(144, 144, sets, large_iter, true);
+            
+            // 1:1 large
+            tests::fill_all_table(1440, 1440, sets, small_iter, true);
+            tests::fill_all_table(1440, 1440, sets, large_iter, true);
+            
+            // 16:9 small
+            tests::fill_all_table(144, 81, sets, small_iter, true);
+            tests::fill_all_table(144, 81, sets, large_iter, true);
+            
+            // 16:9 large
+            tests::fill_all_table(1440, 810, sets, small_iter, true);
+            tests::fill_all_table(1440, 810, sets, large_iter, true);
+            
+            // 9:16 small
+            tests::fill_all_table(81, 144, sets, small_iter, true);
+            tests::fill_all_table(81, 144, sets, large_iter, true);
+            
+            // 9:16 large
+            tests::fill_all_table(810, 1440, sets, small_iter, true);
+            tests::fill_all_table(810, 1440, sets, large_iter, true);
         
-        tests::fill_all_table(100, 100, sets, small_iter, true);
-        tests::fill_all_table(100, 100, sets, medium_iter, true);
-        tests::fill_all_table(100, 100, sets, large_iter, true);
-        tests::fill_all_table(100, 100, sets, xlarge_iter, true);
-    }
+            // 4:3 small
+            tests::fill_all_table(144, 108, sets, small_iter, true);
+            tests::fill_all_table(144, 108, sets, large_iter, true);
+            
+            // 4:3 large
+            tests::fill_all_table(1440, 1080, sets, small_iter, true);
+            tests::fill_all_table(1440, 1080, sets, large_iter, true);
+            
+            // 3:4 small
+            tests::fill_all_table(108, 144, sets, small_iter, true);
+            tests::fill_all_table(108, 144, sets, large_iter, true);
+            
+            // 3:4 large
+            tests::fill_all_table(1080, 1440, sets, small_iter, true);
+            tests::fill_all_table(1080, 1440, sets, large_iter, true);
+        }
 
-    if false {
-        /*
-        kinds of tests to run for test_fill_all():
-          - small square
-          - large square
-          - small wide rectangle
-          - large wide rectangle
-          - small tall rectangle
-          - large tall rectangle
-        */
+        2 => {
+            /*
+            kinds of tests to run for tests::rect_table():
+              - small square
+              - large square
+              - small wide rectangle
+              - large wide rectangle
+              - small tall rectangle
+              - large tall rectangle
+            */
+        
+            let sets = 5;
+            let small_iter = 50;
+            let large_iter = 500;
+            let canvas_width = 2000;
+            let canvas_height = 2000;
+            let x = 50;
+            let y = 50;
+        
+            // 1:1 small
+            tests::rect_table(x, y, 144, 144, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 144, 144, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 1:1 large
+            tests::rect_table(x, y, 1440, 1440, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 1440, 1440, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 16:9 small
+            tests::rect_table(x, y, 144, 81, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 144, 81, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 16:9 large
+            tests::rect_table(x, y, 1440, 810, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 1440, 810, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 9:16 small
+            tests::rect_table(x, y, 81, 144, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 81, 144, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 9:16 large
+            tests::rect_table(x, y, 810, 1440, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 810, 1440, canvas_width, canvas_height, sets, large_iter, true);
+        
+            // 4:3 small
+            tests::rect_table(x, y, 144, 108, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 144, 108, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 4:3 large
+            tests::rect_table(x, y, 1440, 1080, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 1440, 1080, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 3:4 small
+            tests::rect_table(x, y, 108, 144, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 108, 144, canvas_width, canvas_height, sets, large_iter, true);
+            
+            // 3:4 large
+            tests::rect_table(x, y, 1080, 1440, canvas_width, canvas_height, sets, small_iter, true);
+            tests::rect_table(x, y, 1080, 1440, canvas_width, canvas_height, sets, large_iter, true);
+        }
 
-        let sets = 10;
-        let small_iter = 1;
-        let large_iter = 10;
+        3 => {
+            tests::rect_table(50, 50, 500, 500, 1000, 1000, 10, 50, true);
+        }
 
-        // 1:1 small
-        tests::fill_all_table(144, 144, sets, small_iter, true);
-        tests::fill_all_table(144, 144, sets, large_iter, true);
-        
-        // 1:1 large
-        tests::fill_all_table(1440, 1440, sets, small_iter, true);
-        tests::fill_all_table(1440, 1440, sets, large_iter, true);
-        
-        // 16:9 small
-        tests::fill_all_table(144, 81, sets, small_iter, true);
-        tests::fill_all_table(144, 81, sets, large_iter, true);
-        
-        // 16:9 large
-        tests::fill_all_table(1440, 810, sets, small_iter, true);
-        tests::fill_all_table(1440, 810, sets, large_iter, true);
-        
-        // 9:16 small
-        tests::fill_all_table(81, 144, sets, small_iter, true);
-        tests::fill_all_table(81, 144, sets, large_iter, true);
-        
-        // 9:16 large
-        tests::fill_all_table(810, 1440, sets, small_iter, true);
-        tests::fill_all_table(810, 1440, sets, large_iter, true);
+        4 => {
+            let mut canvas = Canvas::with_rgba(500, 500, [64, 20, 30, 40]);
+            let rect_fn = single_thread::rect_xy;
 
-        // 4:3 small
-        tests::fill_all_table(144, 108, sets, small_iter, true);
-        tests::fill_all_table(144, 108, sets, large_iter, true);
-        
-        // 4:3 large
-        tests::fill_all_table(1440, 1080, sets, small_iter, true);
-        tests::fill_all_table(1440, 1080, sets, large_iter, true);
-        
-        // 3:4 small
-        tests::fill_all_table(108, 144, sets, small_iter, true);
-        tests::fill_all_table(108, 144, sets, large_iter, true);
-        
-        // 3:4 large
-        tests::fill_all_table(1080, 1440, sets, small_iter, true);
-        tests::fill_all_table(1080, 1440, sets, large_iter, true);
+            // 0
+            rect_fn(&mut canvas, 50, 50, 200, 300, [220, 90, 20, 255]);
+
+            // 1
+            rect_fn(&mut canvas, 100, -50, 200, 300, [174, 85, 48, 255]);
+
+            // 2
+            rect_fn(&mut canvas, 400, -50, 200, 300, [90, 174, 48, 255]);
+
+            // 3
+
+            // 4
+            
+            // 5
+
+            // 6
+            
+            // 7
+
+            // 8
+
+            canvas.save_as_png("output/rect-bounds-test.png");
+        }
+        _ => {}
     }
 }

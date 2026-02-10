@@ -19,15 +19,11 @@ use rayon::prelude::*;
 /// using parallel pixel-wise processing.
 pub fn fill_all(
     canvas: &mut Canvas,
-    r: u8, g: u8, b: u8, a: u8,
+    rgba: [u8; 4],
 ) {
-    canvas
-        .pixels
+    canvas.pixels
         .par_chunks_mut(4)
-        .for_each(|pixel| {
-            pixel[0] = r;
-            pixel[1] = g;
-            pixel[2] = b;
-            pixel[3] = a;
-        });
+        .for_each(
+            |pixel| { pixel.copy_from_slice(&rgba); }
+        );
 }

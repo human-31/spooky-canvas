@@ -42,16 +42,15 @@ impl Canvas {
 
     /// Creates a new canvas with the specified width, height, and RGBA color.
     pub fn with_rgba(
-        width: u32, height: u32,
-        r: u8, g: u8, b: u8, a: u8,
+        width: u32, height: u32, rgba: [u8; 4],
     ) -> Self {
         let mut pixels = Vec::with_capacity((width * height * 4) as usize);
 
         for _ in 0..(width * height) {
-            pixels.push(r);
-            pixels.push(g);
-            pixels.push(b);
-            pixels.push(a);
+            pixels.push(rgba[0]);
+            pixels.push(rgba[1]);
+            pixels.push(rgba[2]);
+            pixels.push(rgba[3]);
         }
 
         Self {
@@ -239,7 +238,7 @@ pub fn main_test() {
 
     canvas.save_as_png("output/canvas-test-0.png");
 
-    let canvas = Canvas::with_rgba(256, 256, 255, 0, 255, 255);
+    let canvas = Canvas::with_rgba(256, 256, [255, 0, 255, 255]);
 
     let width = canvas.width();
     let height = canvas.height();
