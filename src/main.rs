@@ -21,7 +21,7 @@ fn main() {
 
     let mut c = spooky_canvas::Canvas::with_rgba(500, 500, [20, 50, 150, 255]);
 
-    spooky_canvas::raster::par_pixel::fill_all(&mut c, [255, 255, 0, 255]);
+    spooky_canvas::raster::multi_thread::fill_all_par_pixel(&mut c, [255, 255, 0, 255]);
 
     spooky_canvas::raster::single_thread::rect_xy(
         &mut c,

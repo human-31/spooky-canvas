@@ -16,8 +16,7 @@ mod core;
 mod helpers;
 mod tests;
 
-pub mod par_pixel;
-pub mod par_row;
+pub mod multi_thread;
 pub mod single_thread;
 
 

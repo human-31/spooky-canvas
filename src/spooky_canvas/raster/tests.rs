@@ -13,8 +13,7 @@
 //! - 06
 
 use super::super::canvas::Canvas;
-use super::par_pixel;
-use super::par_row;
+use super::multi_thread;
 use super::single_thread;
 
 use std::collections::HashMap;
@@ -54,13 +53,13 @@ pub fn fill_all_table(
         
         let start = std::time::Instant::now();
         for _ in 0..iterations {
-            par_pixel::fill_all(&mut canvas, [20, 220, 90, 255]);
+            multi_thread::fill_all_par_pixel(&mut canvas, [20, 220, 90, 255]);
         }
         let duration_pixel = start.elapsed();
         
         let start = std::time::Instant::now();
         for _ in 0..iterations {
-            par_row::fill_all(&mut canvas, [20, 90, 220, 255]);
+            multi_thread::fill_all_par_row(&mut canvas, [20, 90, 220, 255]);
         }
         let duration_row = start.elapsed();
 
