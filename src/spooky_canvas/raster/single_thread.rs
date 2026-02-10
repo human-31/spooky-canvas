@@ -25,6 +25,10 @@ pub fn fill_all(
     }
 }
 
+/// Draws a rectangle on the given canvas with the specified top-left corner
+/// coordinates, width, height, and RGBA color.
+/// 
+/// Uses a simple nested for loop approach.
 pub fn rect_xy(
     canvas: &mut Canvas,
     x: i32, y: i32,
@@ -45,21 +49,21 @@ pub fn rect_xy(
     }
 }
 
-pub fn rect_by_row(
-    canvas: &mut Canvas,
-    x: i32, y: i32,
-    width: u32, height: u32,
-    rgba: [u8; 4],
-) {
+// pub fn rect_by_row(
+//     canvas: &mut Canvas,
+//     x: i32, y: i32,
+//     width: u32, height: u32,
+//     rgba: [u8; 4],
+// ) {
 
-}
+// }
 
-pub fn triangle_xy(
-    canvas: &mut Canvas,
-    x1: i32, y1: i32,
-    x2: i32, y2: i32,
-    x3: i32, y3: i32,
-    rgba: [u8; 4],
-) {
+// pub fn triangle_xy(
+//     canvas: &mut Canvas,
+//     x1: i32, y1: i32,
+//     x2: i32, y2: i32,
+//     x3: i32, y3: i32,
+//     rgba: [u8; 4],
+// ) {
 
-}
+// }
