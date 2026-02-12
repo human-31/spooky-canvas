@@ -13,6 +13,7 @@
 //! - 06
 
 use super::super::canvas::Canvas;
+use super::helpers::point_in_triangle;
 
 /// Fills the entire canvas with the specified RGBA color
 /// using a single-thread.
@@ -87,7 +88,7 @@ pub fn triangle_xy(
 
     for py in y_top..y_bottom {
         for px in x_left..x_right {
-            if /* not_in_triangle */ false {
+            if  !point_in_triangle((px as i32, py as i32), v1, v2, v3) {
                 continue;
             }
 
