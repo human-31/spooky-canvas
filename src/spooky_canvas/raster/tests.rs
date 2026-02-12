@@ -123,7 +123,7 @@ pub fn rect_table(
     for i in 0..sets {
         let start = std::time::Instant::now();
         for _ in 0..iterations {
-            single_thread::rect_xy(&mut canvas, x, y, width, height, [220, 90, 20, 255]);
+            single_thread::rect_xy(&mut canvas, (x, y), (width, height), [220, 90, 20, 255]);
         }
         let duration_single = start.elapsed();
         
@@ -199,7 +199,7 @@ pub fn rect_single_thread_table(
     for i in 0..sets {
         let start = std::time::Instant::now();
         for _ in 0..iterations {
-            single_thread::rect_xy(&mut canvas, x, y, width, height, [220, 90, 20, 255]);
+            single_thread::rect_xy(&mut canvas, (x, y), (width, height), [220, 90, 20, 255]);
         }
         let duration_xy = start.elapsed();
         

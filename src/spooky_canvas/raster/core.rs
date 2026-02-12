@@ -21,9 +21,13 @@ use super::tests;
 /// 
 /// The circle replaces any existing pixels within its area.
 /// No anti-aliasing is applied.
+/// 
+/// center = (x, y) \
+/// rgba = [r, g, b, a]
 pub fn circle(
     canvas: &mut Canvas,
-    x: u32, y: u32, radius: u32,
+    center: (i32, i32),
+    radius: u32,
     rgba: [u8; 4],
 ) {
 
@@ -34,9 +38,13 @@ pub fn circle(
 /// 
 /// The ellipse replaces any existing pixels within its area.
 /// No anti-aliasing is applied.
+/// 
+/// center = (x, y)
+/// radii = (x_radius, y_radius)
 pub fn ellipse(
     canvas: &mut Canvas,
-    x: u32, y: u32, x_radius: u32, y_radius: u32,
+    center: (i32, i32),
+    radii: (u32, u32),
     rgba: [u8; 4]
 ) {
 
@@ -44,6 +52,8 @@ pub fn ellipse(
 
 
 /// Fills the entire canvas with the specified RGBA color.
+/// 
+/// rgba = [r, g, b, a]
 pub fn fill_all(
     canvas: &mut Canvas,
     rgba: [u8; 4]
@@ -58,7 +68,7 @@ pub fn fill_all(
 /// No anti-aliasing is applied.
 pub fn polygon(
     canvas: &mut Canvas,
-    points: &[(u32, u32)],
+    points: &[(i32, i32)],
     rgba: [u8; 4]
 ) {
 
@@ -69,9 +79,14 @@ pub fn polygon(
 /// 
 /// The rectangle replaces any existing pixels within its area.
 /// No anti-aliasing is applied.
+/// 
+/// top_left = (x, y)
+/// size = (width, height)
+/// rgba = [r, g, b, a]
 pub fn rect(
     canvas: &mut Canvas,
-    x: u32, y: u32, width: u32, height: u32,
+    top_left: (i32, i32),
+    size: (u32, u32),
     rgba: [u8; 4],
 ) {
 
@@ -83,9 +98,13 @@ pub fn rect(
 /// 
 /// The square replaces any existing pixels within its area.
 /// No anti-aliasing is applied.
+/// 
+/// top_left = (x, y)
+/// rgba = [r, g, b, a]
 pub fn square(
     canvas: &mut Canvas,
-    x: u32, y: u32, size: u32,
+    top_left: (i32, i32),
+    size: u32,
     rgba: [u8; 4],
 ) {
 
@@ -96,11 +115,16 @@ pub fn square(
 /// 
 /// The triangle replaces any existing pixels within its area.
 /// No anti-aliasing is applied.
+/// 
+/// v1 = (x1, y1)
+/// v2 = (x2, y2)
+/// v3 = (x3, y3)
+/// rgba = [r, g, b, a]
 pub fn triangle(
     canvas: &mut Canvas,
-    x1: u32, y1: u32,
-    x2: u32, y2: u32,
-    x3: u32, y3: u32,
+    v1: (i32, i32),
+    v2: (i32, i32),
+    v3: (i32, i32),
     rgba: [u8; 4],
 ) {
 
@@ -268,13 +292,13 @@ pub fn main_test() {
             let rect_fn = single_thread::rect_xy;
 
             // 0
-            rect_fn(&mut canvas, 50, 50, 200, 300, [220, 90, 20, 255]);
+            rect_fn(&mut canvas, (50, 50), (200, 300), [220, 90, 20, 255]);
 
             // 1
-            rect_fn(&mut canvas, 100, -50, 200, 300, [174, 85, 48, 255]);
+            rect_fn(&mut canvas, (100, -50), (200, 300), [174, 85, 48, 255]);
 
             // 2
-            rect_fn(&mut canvas, 400, -50, 200, 300, [90, 174, 48, 255]);
+            rect_fn(&mut canvas, (400, -50), (200, 300), [90, 174, 48, 255]);
 
             // 3
 

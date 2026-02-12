@@ -21,13 +21,11 @@ fn main() {
 
     let mut c = spooky_canvas::Canvas::with_rgba(500, 500, [20, 50, 150, 255]);
 
-    spooky_canvas::raster::multi_thread::fill_all_par_pixel(&mut c, [255, 255, 0, 255]);
+    spooky_canvas::raster::multi_thread
+        ::fill_all_par_pixel(&mut c, [255, 255, 0, 255]);
 
-    spooky_canvas::raster::single_thread::rect_xy(
-        &mut c,
-        50, 100, 200, 150,
-        [255, 255, 255, 255]
-    );
+    spooky_canvas::raster::single_thread
+        ::rect_xy(&mut c, (50, 100), (200, 150), [255, 255, 255, 255]);
 
     c.save_as_png("output/main-test-0.png");
 }
