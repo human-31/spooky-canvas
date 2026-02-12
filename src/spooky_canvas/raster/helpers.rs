@@ -46,7 +46,7 @@ fn edges_in_triangle(edge_1: i64, edge_2: i64, edge_3: i64) -> bool {
 /// v1 = (x1, y1)
 /// v2 = (x2, y2)
 /// v3 = (x3, y3)
-fn point_in_triangle(
+pub fn point_in_triangle(
     point: (i32, i32),
     v1: (i32, i32),
     v2: (i32, i32),
