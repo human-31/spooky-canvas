@@ -15,6 +15,43 @@
 use super::super::canvas::Canvas;
 use super::helpers::point_in_triangle;
 
+/// Draws a circle on the given canvas with the specified center coordinates,
+/// radius, and RGBA color.
+/// 
+/// Uses a simple nested for loop approach.
+/// 
+/// center = (x, y) \
+/// rgba = [r, g, b, a]
+pub fn circle_xy(
+    canvas: &mut Canvas,
+    center: (i32, i32),
+    radius: u32,
+    rgba: [u8; 4],
+) {
+    let (center_x, center_y) = center;
+
+    let x_left = (center_x - 10 - radius as i32).max(0) as u32;
+    let x_right = ((center_x + 10 + radius as i32) as u32).min(canvas.width());
+
+    let y_top = (center_y - 10 - radius as i32).max(0) as u32;
+    let y_bottom = ((center_y + 10 + radius as i32) as u32).min(canvas.height());
+
+    
+    for pixel_y in y_top..y_bottom {
+        for pixel_x in x_left..x_right {
+            let dx = pixel_x as i32 - center_x;
+            let dy = pixel_y as i32 - center_y;
+
+            if dx * dx + dy * dy > (radius as f32 + 0.5).powi(2) as i32 {
+                continue;
+            }
+            
+            let i = canvas.xy_to_index_unchecked(pixel_x, pixel_y);
+            canvas.pixels[i..(i + 4)].copy_from_slice(&rgba);
+        }
+    }
+}
+
 /// Fills the entire canvas with the specified RGBA color
 /// using a single-thread.
 /// 
@@ -38,9 +75,8 @@ pub fn fill_all(
 /// rgba = [r, g, b, a]
 pub fn rect_xy(
     canvas: &mut Canvas,
-    // x: i32, y: i32,
-    // width: u32, height: u32,
-    top_left: (i32, i32), size: (u32, u32),
+    top_left: (i32, i32),
+    size: (u32, u32),
     rgba: [u8; 4],
 ) {
     let (x, y) = top_left;
@@ -69,6 +105,15 @@ pub fn rect_xy(
 
 // }
 
+/// Draws a triangle on the given canvas defined by the three vertex
+/// coordinates, using the specified RGBA color.
+/// 
+/// Uses a simple nested for loop approach.
+/// 
+/// v1 = (x1, y1)
+/// v2 = (x2, y2)
+/// v3 = (x3, y3)
+/// rgba = [r, g, b, a]
 pub fn triangle_xy(
     canvas: &mut Canvas,
     v1: (i32, i32),
