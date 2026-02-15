@@ -13,6 +13,8 @@
 //! - 06
 
 use super::super::canvas::Canvas;
+use super::helpers::edge;
+use super::helpers::edges_in_triangle;
 use super::helpers::point_in_triangle;
 
 /// Draws a circle on the given canvas with the specified center coordinates,
@@ -126,10 +128,10 @@ pub fn triangle_xy(
     let (x3, y3) = v3;
 
     let x_left = x1.min(x2).min(x3).max(0) as u32;
-    let x_right = (x1.max(x2).max(x3) as u32).min(canvas.width());
+    let x_right = (x1.max(x2 + 1).max(x3 + 1) as u32).min(canvas.width());
 
     let y_top = y1.min(y2).min(y3).max(0) as u32;
-    let y_bottom = (y1.max(y2).max(y3) as u32).min(canvas.height());
+    let y_bottom = (y1.max(y2 + 1).max(y3 + 1) as u32).min(canvas.height());
 
     for py in y_top..y_bottom {
         for px in x_left..x_right {
@@ -139,6 +141,51 @@ pub fn triangle_xy(
 
             let i = canvas.xy_to_index_unchecked(px, py);
             canvas.pixels[i..(i + 4)].copy_from_slice(&rgba);
+        }
+    }
+}
+
+pub fn triangle_xy_increment(
+    canvas: &mut Canvas,
+    v1: (i32, i32),
+    v2: (i32, i32),
+    v3: (i32, i32),
+    rgba: [u8; 4],
+) {
+    let (x1, y1) = v1;
+    let (x2, y2) = v2;
+    let (x3, y3) = v3;
+
+    let x_left = x1.min(x2).min(x3).max(0) as u32;
+    let x_right = (x1.max(x2 + 1).max(x3 + 1) as u32).min(canvas.width());
+
+    let y_top = y1.min(y2).min(y3).max(0) as u32;
+    let y_bottom = (y1.max(y2 + 1).max(y3 + 1) as u32).min(canvas.height());
+
+    let increment_1 = y2 as i64 - y1 as i64;
+    let increment_2 = y3 as i64 - y2 as i64;
+    let increment_3 = y1 as i64 - y3 as i64;
+
+    for py in y_top..y_bottom {
+        let init_point = (x_left as i32, py as i32);
+
+        let mut edge_1 = edge(init_point, v1, v2);
+        let mut edge_2 = edge(init_point, v2, v3);
+        let mut edge_3 = edge(init_point, v3, v1);
+
+        for px in x_left..x_right {
+            // if  !point_in_triangle((px as i32, py as i32), v1, v2, v3) {
+            //     continue;
+            // }
+
+            if edges_in_triangle(edge_1, edge_2, edge_3) {
+                let i = canvas.xy_to_index_unchecked(px, py);
+                canvas.pixels[i..(i + 4)].copy_from_slice(&rgba);
+            }
+
+            edge_1 += increment_1;
+            edge_2 += increment_2;
+            edge_3 += increment_3;
         }
     }
 }

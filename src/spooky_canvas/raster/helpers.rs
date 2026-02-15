@@ -19,7 +19,7 @@
 /// point = (x, y)
 /// v1 = (x1, y1)
 /// v2 = (x2, y2)
-fn edge(point: (i32, i32), v1: (i32, i32), v2: (i32, i32)) -> i64 {
+pub fn edge(point: (i32, i32), v1: (i32, i32), v2: (i32, i32)) -> i64 {
     let (x, y) = (point.0 as i64, point.1 as i64);
     let (x1, y1) = (v1.0 as i64, v1.1 as i64);
     let (x2, y2) = (v2.0 as i64, v2.1 as i64);
@@ -28,7 +28,7 @@ fn edge(point: (i32, i32), v1: (i32, i32), v2: (i32, i32)) -> i64 {
 }
 
 /// Determines if a given point is inside a triangle given the edge values.
-fn edges_in_triangle(edge_1: i64, edge_2: i64, edge_3: i64) -> bool {
+pub fn edges_in_triangle(edge_1: i64, edge_2: i64, edge_3: i64) -> bool {
     if edge_1 >= 0 && edge_2 >= 0 && edge_3 >= 0 {
         return true;
     }
