@@ -1,5 +1,7 @@
 use spooky_colors::RgbaRaw;
 
+use image::{ImageReader, ImageBuffer, Rgba};
+
 pub struct CanvasRaw {
     // max size: 65,535 x 65,535
     width: u16,
@@ -41,7 +43,7 @@ impl CanvasRaw {
     }
 
     pub fn from_png(path: &str) -> Self {
-        todo!("TDOD: CanvasRaw::from_png")
+        todo!("TODO: CanvasRaw::from_png")
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -63,5 +65,71 @@ impl CanvasRaw {
 
     fn pixel_count(&self) -> u32 {
         (self.width as u32) * (self.height as u32)
+    }
+
+    pub fn pixel_at(&self, x: u16, y: u16) -> RgbaRaw {
+        todo!("TODO: CanvasRaw::pixel_at_unchecked")
+    }
+
+    pub unsafe fn pixel_at_unchecked(&self, x: u16, y: u16) -> RgbaRaw {
+        todo!("TODO: CanvasRaw::pixel_at_unchecked")
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // SETTERS /////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    pub fn set_pixel(&self, x: u16, y: u16, rgba: RgbaRaw) {
+        todo!("TODO: CanvasRaw::set_pixel")
+    }
+
+    pub unsafe fn set_pixel_unchecked(&self, x: u16, y: u16, rgba: RgbaRaw) {
+        todo!("TODO: CanvasRaw::set_pixel_unchecked")
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CHECKERS ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    pub fn index_in_bounds(&self, index: usize) -> bool {
+        index < self.pixels.len()
+    }
+
+    pub fn xy_in_bounds(&self, x: u16, y: u16) -> bool {
+        x < self.width && y < self.height
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CONVERTERS //////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    
+    pub fn index_to_xy(&self, index: usize) -> Option<(u16, u16)> {
+        todo!("TODO: CanvasRaw::index_to_xy")
+    }
+
+    pub unsafe fn index_to_xy_unchecked(&self, index: usize) -> (u16, u16) {
+        todo!("TODO: CanvasRaw::index_to_xy")
+    }
+    
+    pub fn xy_to_index(&self, x: u16, y: u16) -> Option<usize> {
+        todo!("TODO: CanvasRaw::xy_to_index")
+    }
+    
+    pub unsafe fn xy_to_index_unchecked(&self, x: u16, y: u16) -> usize {
+        todo!("TODO: CanvasRaw::xy_to_index_unchecked")
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // MISC ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    
+    pub fn save_as_png(&self, path: &str) {
+        let buffer = ImageBuffer::<Rgba<u8>, _>::from_raw(
+            self.width as u32,
+            self.height as u32,
+            self.pixels.clone(),
+        ).expect("Invalid image buffer");
+
+        buffer.save(path).expect("Failed to save PNG");
     }
 }
