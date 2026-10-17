@@ -7,3 +7,4 @@ edition = "2024"
 image = "0.25.9"
 rayon = "1.8"
 rand = "0.9"
+spooky-colors = { path = "../spooky-colors" }

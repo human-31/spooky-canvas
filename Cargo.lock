@@ -816,7 +816,12 @@ dependencies = [
  "image",
  "rand",
  "rayon",
+ "spooky-colors",
 ]
+
+[[package]]
+name = "spooky-colors"
+version = "0.1.0"
 
 [[package]]
 name = "stable_deref_trait"
