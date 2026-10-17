@@ -1,4 +1,4 @@
-use spooky_colors::RgbaRaw;
+use spooky_colors::{RgbaRaw, RgbaExt};
 
 use image::{ImageReader, ImageBuffer, Rgba};
 
@@ -191,5 +191,91 @@ impl CanvasRaw {
         ).expect("Invalid image buffer");
 
         buffer.save(path).expect("Failed to save PNG");
+    }
+
+    /// fun test, ill prolly put this into its own module with more funcitonality
+    pub fn to_img_string(&self) -> String {
+        let ramp = " .:-=+*#%@";
+        let mut ramp_vec: Vec<&str> = ramp.split("").skip(1).collect();
+        ramp_vec.pop().expect("empty ramp");
+
+        let to_char = |luma: f32| -> &str {
+            let index = ((luma * (ramp_vec.len() as f32)) as usize).clamp(0, ramp_vec.len() - 1);
+
+            ramp_vec[index]
+        };
+
+        let mut out = String::new();
+
+        for y in 0..self.height {
+            if y != 0 {
+                out += "\n";
+            }
+
+            for x in 0..self.width {
+                let luma = unsafe{self.pixel_at_unchecked(x, y)}.luma();
+                out += to_char(luma);
+            }
+        }
+
+        out
+    }
+
+    /// might delater?
+    pub fn scaled_nearest(&self, new_w: u16, new_h: u16) -> Self {
+        let (w, h) = (self.width as usize, self.height as usize);
+        let (nw, nh) = (new_w as usize, new_h as usize);
+        assert!(w > 0 && h > 0 && nw > 0 && nh > 0);
+
+        // Column mapping is the same for every row, so compute it once.
+        // Using pixel centers avoids a half-pixel shift.
+        let x_map: Vec<usize> = (0..nw).map(|x| ((2 * x + 1) * w) / (2 * nw)).collect();
+
+        let mut out: Vec<[u8; 4]> = Vec::with_capacity(nw * nh);
+        for y in 0..nh {
+            let sy = ((2 * y + 1) * h) / (2 * nh);
+            let row = &self.pixels[sy * w * 4..(sy + 1) * w * 4];
+            out.extend(x_map.iter().map(|&sx| {
+                let p = &row[sx * 4..sx * 4 + 4];
+                [p[0], p[1], p[2], p[3]]
+            }));
+        }
+
+        Self { width: new_w, height: new_h, pixels: out.into_flattened() }
+    }
+
+    /// might delater?
+    pub fn scaled_bilinear(&self, new_w: u16, new_h: u16) -> Self {
+        let (w, h) = (self.width as usize, self.height as usize);
+        let (nw, nh) = (new_w as usize, new_h as usize);
+        assert!(w > 0 && h > 0 && nw > 0 && nh > 0);
+
+        let x_scale = w as f32 / nw as f32;
+        let y_scale = h as f32 / nh as f32;
+        let mut out: Vec<u8> = Vec::with_capacity(nw * nh * 4);
+
+        for y in 0..nh {
+            let fy = ((y as f32 + 0.5) * y_scale - 0.5).max(0.0);
+            let y0 = (fy as usize).min(h - 1);
+            let y1 = (y0 + 1).min(h - 1);
+            let ty = fy - y0 as f32;
+
+            for x in 0..nw {
+                let fx = ((x as f32 + 0.5) * x_scale - 0.5).max(0.0);
+                let x0 = (fx as usize).min(w - 1);
+                let x1 = (x0 + 1).min(w - 1);
+                let tx = fx - x0 as f32;
+
+                let at = |xx: usize, yy: usize, c: usize| self.pixels[(yy * w + xx) * 4 + c] as f32;
+
+                for c in 0..4 {
+                    let top = at(x0, y0, c) * (1.0 - tx) + at(x1, y0, c) * tx;
+                    let bot = at(x0, y1, c) * (1.0 - tx) + at(x1, y1, c) * tx;
+                    out.push((top * (1.0 - ty) + bot * ty + 0.5) as u8);
+                }
+            }
+        }
+
+        Self { width: new_w, height: new_h, pixels: out }
     }
 }
