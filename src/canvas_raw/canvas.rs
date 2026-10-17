@@ -8,7 +8,7 @@ pub struct CanvasRaw {
     height: u16,
 
     // flat vector of RGBA bytes in row-major order
-    pub pixels: Vec<u8>,
+    pixels: Vec<u8>,
 }
 
 impl CanvasRaw {
@@ -18,7 +18,7 @@ impl CanvasRaw {
     
     /// init w/ transparent black
     pub fn new(width: u16, height: u16) -> Self {
-        let size = (width * height * 4) as usize;
+        let size = (width as usize) * (height as usize) * 4;
         let pixels = vec![0; size];
 
         Self {
@@ -29,11 +29,8 @@ impl CanvasRaw {
     }
 
     pub fn with_rgba(width: u16, height: u16, rgba: RgbaRaw) -> Self {
-        let mut pixels = Vec::with_capacity((width * height * 4) as usize);
-
-        for px in pixels.chunks_exact_mut(4) {
-            px.copy_from_slice(&rgba);
-        }
+        let count = (width as usize) * (height as usize);
+        let pixels = vec![rgba; count].into_flattened();
 
         Self {
             width,
@@ -42,49 +39,95 @@ impl CanvasRaw {
         }
     }
 
+    /// fix for all edge cases and stuff later
     pub fn from_png(path: &str) -> Self {
-        todo!("TODO: CanvasRaw::from_png")
+        let img = ImageReader::open(path).unwrap()
+            .decode().unwrap()
+            .to_rgba8();
+        
+        let (w32, h32) = img.dimensions();
+        let pixels = img.into_raw();
+
+        Self {
+            width: w32 as u16,
+            height: h32 as u16,
+            pixels,
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // GETTERS /////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     
-    fn width(&self) -> u16 {
+    pub fn width(&self) -> u16 {
         self.width
     }
 
-    fn height(&self) -> u16 {
+    pub fn height(&self) -> u16 {
         self.height
     }
 
     /// (width, height)
-    fn size(&self) -> (u16, u16) {
+    pub fn size(&self) -> (u16, u16) {
         (self.width, self.height)
     }
 
-    fn pixel_count(&self) -> u32 {
+    pub fn pixels(&self) -> &[u8] {
+        &self.pixels
+    }
+
+    pub fn pixels_mut(&mut self) -> &mut [u8] {
+        &mut self.pixels
+    }
+
+    pub fn pixel_count(&self) -> u32 {
         (self.width as u32) * (self.height as u32)
     }
 
-    pub fn pixel_at(&self, x: u16, y: u16) -> RgbaRaw {
-        todo!("TODO: CanvasRaw::pixel_at_unchecked")
+    pub fn pixel_at(&self, x: u16, y: u16) -> Option<RgbaRaw> {
+        if !self.xy_in_bounds(x, y) {
+            return None;
+        }
+
+        Some(unsafe { self.pixel_at_unchecked(x, y) })
     }
 
     pub unsafe fn pixel_at_unchecked(&self, x: u16, y: u16) -> RgbaRaw {
-        todo!("TODO: CanvasRaw::pixel_at_unchecked")
+        let i = self.xy_to_index_unchecked(x, y);
+
+        unsafe {
+            self.pixels
+                .as_ptr()
+                .add(i)
+                .cast::<[u8; 4]>()
+                .read()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
     // SETTERS /////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    pub fn set_pixel(&self, x: u16, y: u16, rgba: RgbaRaw) {
-        todo!("TODO: CanvasRaw::set_pixel")
+    pub fn set_pixel(&mut self, x: u16, y: u16, rgba: RgbaRaw) {
+        if !self.xy_in_bounds(x, y) {
+            return;
+        }
+
+        unsafe {
+            self.set_pixel_unchecked(x, y, rgba);
+        }
     }
 
-    pub unsafe fn set_pixel_unchecked(&self, x: u16, y: u16, rgba: RgbaRaw) {
-        todo!("TODO: CanvasRaw::set_pixel_unchecked")
+    pub unsafe fn set_pixel_unchecked(&mut self, x: u16, y: u16, rgba: RgbaRaw) {
+        let i = self.xy_to_index_unchecked(x, y);
+
+        unsafe {
+            self.pixels
+                .as_mut_ptr()
+                .add(i)
+                .cast::<[u8; 4]>()
+                .write(rgba);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -104,19 +147,36 @@ impl CanvasRaw {
     ////////////////////////////////////////////////////////////////////////////
     
     pub fn index_to_xy(&self, index: usize) -> Option<(u16, u16)> {
-        todo!("TODO: CanvasRaw::index_to_xy")
+        if !self.index_in_bounds(index) {
+            return None;
+        }
+
+        Some(self.index_to_xy_unchecked(index))
     }
 
-    pub unsafe fn index_to_xy_unchecked(&self, index: usize) -> (u16, u16) {
-        todo!("TODO: CanvasRaw::index_to_xy")
+    pub fn index_to_xy_unchecked(&self, index: usize) -> (u16, u16) {
+        debug_assert!(self.index_in_bounds(index));
+
+        let pixel_index = (index / 4) as u32;
+
+        let x32 = pixel_index % self.width as u32;
+        let y32 = pixel_index / self.width as u32;
+
+        (x32 as u16, y32 as u16)
     }
     
     pub fn xy_to_index(&self, x: u16, y: u16) -> Option<usize> {
-        todo!("TODO: CanvasRaw::xy_to_index")
+        if !self.xy_in_bounds(x, y) {
+            return None;
+        }
+
+        Some(self.xy_to_index_unchecked(x, y))
     }
     
-    pub unsafe fn xy_to_index_unchecked(&self, x: u16, y: u16) -> usize {
-        todo!("TODO: CanvasRaw::xy_to_index_unchecked")
+    pub fn xy_to_index_unchecked(&self, x: u16, y: u16) -> usize {
+        debug_assert!(self.xy_in_bounds(x, y));
+    
+        4 * ((self.width as usize) * (y as usize) + (x as usize))
     }
 
     ////////////////////////////////////////////////////////////////////////////
