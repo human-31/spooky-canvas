@@ -8,7 +8,7 @@ pub struct CanvasRaw {
     height: u16,
 
     // flat vector of RGBA bytes in row-major order
-    pixels: Vec<u8>,
+    bytes: Vec<u8>,
 }
 
 impl CanvasRaw {
@@ -19,23 +19,23 @@ impl CanvasRaw {
     /// init w/ transparent black
     pub fn new(width: u16, height: u16) -> Self {
         let size = (width as usize) * (height as usize) * 4;
-        let pixels = vec![0; size];
+        let bytes = vec![0; size];
 
         Self {
             width,
             height,
-            pixels,
+            bytes,
         }
     }
 
     pub fn with_rgba(width: u16, height: u16, rgba: RgbaRaw) -> Self {
         let count = (width as usize) * (height as usize);
-        let pixels = vec![rgba; count].into_flattened();
+        let bytes = vec![rgba; count].into_flattened();
 
         Self {
             width,
             height,
-            pixels
+            bytes
         }
     }
 
@@ -46,12 +46,12 @@ impl CanvasRaw {
             .to_rgba8();
         
         let (w32, h32) = img.dimensions();
-        let pixels = img.into_raw();
+        let bytes = img.into_raw();
 
         Self {
             width: w32 as u16,
             height: h32 as u16,
-            pixels,
+            bytes,
         }
     }
 
@@ -72,12 +72,12 @@ impl CanvasRaw {
         (self.width, self.height)
     }
 
-    pub fn pixels(&self) -> &[u8] {
-        &self.pixels
+    pub fn bytes(&self) -> &[u8] {
+        &self.bytes
     }
 
-    pub fn pixels_mut(&mut self) -> &mut [u8] {
-        &mut self.pixels
+    pub fn bytes_mut(&mut self) -> &mut [u8] {
+        &mut self.bytes
     }
 
     pub fn pixel_count(&self) -> u32 {
@@ -96,12 +96,24 @@ impl CanvasRaw {
         let i = self.xy_to_index_unchecked(x, y);
 
         unsafe {
-            self.pixels
+            self.bytes
                 .as_ptr()
                 .add(i)
                 .cast::<[u8; 4]>()
                 .read()
         }
+    }
+
+    pub fn pixels(&self) -> &[RgbaRaw] {
+        let (chunks, rest) = self.bytes.as_chunks::<4>();
+        debug_assert!(rest.is_empty());
+        chunks
+    }
+
+    pub fn pixels_mut(&mut self) -> &mut [RgbaRaw] {
+        let (chunks, rest) = self.bytes.as_chunks_mut::<4>();
+        debug_assert!(rest.is_empty());
+        chunks
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -122,7 +134,7 @@ impl CanvasRaw {
         let i = self.xy_to_index_unchecked(x, y);
 
         unsafe {
-            self.pixels
+            self.bytes
                 .as_mut_ptr()
                 .add(i)
                 .cast::<[u8; 4]>()
@@ -135,7 +147,7 @@ impl CanvasRaw {
     ////////////////////////////////////////////////////////////////////////////
 
     pub fn index_in_bounds(&self, index: usize) -> bool {
-        index < self.pixels.len()
+        index < self.bytes.len()
     }
 
     pub fn xy_in_bounds(&self, x: u16, y: u16) -> bool {
@@ -187,7 +199,7 @@ impl CanvasRaw {
         let buffer = ImageBuffer::<Rgba<u8>, _>::from_raw(
             self.width as u32,
             self.height as u32,
-            self.pixels.clone(),
+            self.bytes.clone(),
         ).expect("Invalid image buffer");
 
         buffer.save(path).expect("Failed to save PNG");
@@ -234,14 +246,14 @@ impl CanvasRaw {
         let mut out: Vec<[u8; 4]> = Vec::with_capacity(nw * nh);
         for y in 0..nh {
             let sy = ((2 * y + 1) * h) / (2 * nh);
-            let row = &self.pixels[sy * w * 4..(sy + 1) * w * 4];
+            let row = &self.bytes[sy * w * 4..(sy + 1) * w * 4];
             out.extend(x_map.iter().map(|&sx| {
                 let p = &row[sx * 4..sx * 4 + 4];
                 [p[0], p[1], p[2], p[3]]
             }));
         }
 
-        Self { width: new_w, height: new_h, pixels: out.into_flattened() }
+        Self { width: new_w, height: new_h, bytes: out.into_flattened() }
     }
 
     /// might delater?
@@ -266,7 +278,7 @@ impl CanvasRaw {
                 let x1 = (x0 + 1).min(w - 1);
                 let tx = fx - x0 as f32;
 
-                let at = |xx: usize, yy: usize, c: usize| self.pixels[(yy * w + xx) * 4 + c] as f32;
+                let at = |xx: usize, yy: usize, c: usize| self.bytes[(yy * w + xx) * 4 + c] as f32;
 
                 for c in 0..4 {
                     let top = at(x0, y0, c) * (1.0 - tx) + at(x1, y0, c) * tx;
@@ -276,6 +288,6 @@ impl CanvasRaw {
             }
         }
 
-        Self { width: new_w, height: new_h, pixels: out }
+        Self { width: new_w, height: new_h, bytes: out }
     }
 }
