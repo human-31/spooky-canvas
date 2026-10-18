@@ -1,1 +1,1 @@
-pub mod canvas_raw;
+pub mod raw;
